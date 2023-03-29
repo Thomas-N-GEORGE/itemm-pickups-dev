@@ -59,7 +59,7 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-  border: 1px solid ${p => p.focused ? "orangered" : "#333333"};
+  border: 1px solid ${p => p.focused ? "#25C8FC" : "#333333"};
   margin-top: -1px;
   z-index: ${p => p.focused ? 2 : 1};
   
@@ -93,6 +93,6 @@ const Input = styled.input`
   background-color: transparent;
   border-left: 1px solid #333333;
   
-  caret-color: orangered;
+  caret-color: #25C8FC;
 `;
 
