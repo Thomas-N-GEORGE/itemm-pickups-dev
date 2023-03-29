@@ -17,7 +17,8 @@ export default function InputField({
   handleChange,
   type,
   label,
-  inputKey
+  inputKey,
+  linkedValue
 }) {
 
   const [focused, setIsFocused] = useState(false);
@@ -38,6 +39,7 @@ export default function InputField({
     <Wrapper focused={focused}>
       <p className={"input-label"}>{label}</p>
       <Input
+        value={linkedValue || null}
         size={2}
         type={type}
         name={label}
