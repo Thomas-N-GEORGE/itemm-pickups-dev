@@ -158,10 +158,8 @@ const Pickup = styled.div`
   height: 100%;
   width: 80px;
   border-radius: 12px;
-  background-color: #282828;
-  opacity: ${p => p.isMoving ? 0.8 : 1};
+  background-color: ${p => p.isMoving ? "rgba(6,27,33,0.8)" : "#282828"};
   border: 1px solid ${p => p.isMoving ? "#25C8FC" : "#525252"};
-  //background-color: ${p => p.isMoving ? "green" : "red"};
   left: ${p => p.position }px;
   z-index: ${p => p.isMoving ? 10 : 0};
   box-shadow: ${p => p.isMoving ? "0px 8px 12px rgba(0, 0, 0, 1)" : "inherit"};
