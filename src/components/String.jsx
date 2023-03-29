@@ -3,13 +3,13 @@ import { useState } from "react";
 import useWindowDimensions from "../hooks/windowDimensions";
 
 
-export default function String({size, stripes, handleChange}) {
+export default function String({settings, handleChange}) {
 
   const [pickX, setPickX] = useState(0);
   const [showPick, setShowPick] = useState(false);
   const [vibration, setVibration] = useState(false);
 
-
+  const { size, name, stripes } = settings;
   const { width } = useWindowDimensions();
 
   const handleMouseEnter = (e) => {
@@ -26,15 +26,14 @@ export default function String({size, stripes, handleChange}) {
   }
 
   const vibrate = (e) => {
-    handleChange(
-      "excitementPosition",
-      Math.trunc(170 - (e.clientX * (170 / (width - 84) )) )
-    )
+    handleChange({
+      "selectedString": name,
+      "excitementPosition": Math.trunc(170 - (e.clientX * (170 / (width - 34) )) )
+    })
     setVibration(true);
     setTimeout(() => {
       setVibration(false);
     }, 1500)
-
   }
 
   return (
@@ -58,12 +57,12 @@ const StringContainer = styled.div`
   position: relative;
   height: 30px;
   width: 100%;
-  
+
   .hide-pick {
     transform: scale(0);
     transition: transform 300ms ease;
   }
-  
+
   .vibrate {
     animation-timing-function: linear;
     animation-duration: 0.1s;

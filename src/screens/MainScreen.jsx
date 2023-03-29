@@ -7,6 +7,15 @@ import Curve from "../components/Curve";
 import compute from "../functions/compute";
 import String from "../components/String";
 
+
+const strings = [
+  { name: "E2", size: 1, stripes: false},
+  { name: "B", size: 1.4, stripes: false},
+  { name: "G", size: 1.8, stripes: false},
+  { name: "D", size: 2, stripes: true},
+  { name: "A", size: 2.2, stripes: true},
+  { name: "E", size: 2.4, stripes: true},
+]
 const controls = [
   {
     key: "pickupPosition",
@@ -38,16 +47,16 @@ const controls = [
   },
   {
     key: "selectedString",
-    defaultValue: 1,
+    defaultValue: "E",
     label: "Corde jouée (1/6)",
-    type: "number",
-    linked: false,
+    type: "text",
+    linked: true,
   }
 ]
 
 export default function MainScreen() {
 
-  const [inputValues, handleInputValuesChange] = useInputValues(
+  const [inputValues, handleInputValuesChange, handleInputValuesChanges] = useInputValues(
     arrayToObj(controls, "key", "defaultValue")
   )
 
@@ -67,12 +76,13 @@ export default function MainScreen() {
       </ResultSection>
 
       <Strings>
-        <String size={1} stripes={false} handleChange={handleInputValuesChange}/>
-        <String size={1.2} stripes={false} handleChange={handleInputValuesChange}/>
-        <String size={1.4} stripes={false} handleChange={handleInputValuesChange}/>
-        <String size={1.8} stripes={true} handleChange={handleInputValuesChange}/>
-        <String size={2} stripes={true} handleChange={handleInputValuesChange}/>
-        <String size={2.4} stripes={true} handleChange={handleInputValuesChange}/>
+        { strings.map((str, key) =>
+            <String
+              key={key}
+              settings={{name: str.name, size: str.size, stripes: str.stripes}}
+              handleChange={handleInputValuesChanges}/>
+          )
+        }
       </Strings>
 
       <InputSection>
@@ -98,7 +108,6 @@ const PageWrapper = styled.div`
   h2 {
     color: #f4f4f4;
   }
-  
 `;
 
 const Strings = styled.div`

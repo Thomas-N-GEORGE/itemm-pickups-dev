@@ -51,7 +51,6 @@ export default function Curve({data}) {
   }, [plotsData])
 
   useEffect(() => {
-    console.log(data);
     setDoAnimation(true);
     animate();
   }, [data])
