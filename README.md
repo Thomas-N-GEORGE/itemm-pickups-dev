@@ -7,11 +7,11 @@ La fonction principale du fichier (compute) est appelée à chaque fois qu'une m
 Le paramètre `inputValues` est un objet ayant les propriétés suivantes:
 
 | propriété          | type                          | description                              |
-| ------------------ | ----------------------------- | ---------------------------------------- |
+|--------------------|-------------------------------|------------------------------------------|
 | excitementPosition | number                        | Endroit où la corde est attaquée         |
 | pickupPosition     | number                        | Position du micro                        |
 | pickupType         | string ("simple" ou "double") | Type du micro                            |
-| selectedString     | number (1 à 6)                | Corde jouée                              |
+| selectedString     | string                        | Corde jouée ('E', 'A', ...)              |
 | stringLength       | number                        | Longueur de la corde. Relatif à la jouée |
 
 

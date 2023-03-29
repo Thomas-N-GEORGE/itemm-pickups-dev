@@ -6,6 +6,8 @@ import { arrayToObj } from "../utils/convert";
 import Curve from "../components/Curve";
 import compute from "../functions/compute";
 import String from "../components/String";
+import PickupSlider from "../components/Slider";
+import useWindowDimensions from "../hooks/windowDimensions";
 
 
 const strings = [
@@ -22,7 +24,7 @@ const controls = [
     defaultValue: 12,
     label: "Position du micro (mm)",
     type: "number",
-    linked: false,
+    linked: true,
   },
   {
     key: "excitementPosition",
@@ -56,12 +58,15 @@ const controls = [
 
 export default function MainScreen() {
 
+  const [isPickupMoving, setIsPickupMoving] = useState();
+
   const [inputValues, handleInputValuesChange, handleInputValuesChanges] = useInputValues(
     arrayToObj(controls, "key", "defaultValue")
   )
 
   const [curveData, setCurveData] = useState([]);
 
+  const { width } = useWindowDimensions();
 
   useEffect(() => {
     setCurveData(compute(inputValues));
@@ -76,6 +81,9 @@ export default function MainScreen() {
       </ResultSection>
 
       <Strings>
+        <Pickup
+          isMoving={isPickupMoving}
+          position={inputValues["pickupPosition"] * ((width - 204) / 170 )} />
         { strings.map((str, key) =>
             <String
               key={key}
@@ -83,7 +91,12 @@ export default function MainScreen() {
               handleChange={handleInputValuesChanges}/>
           )
         }
+        <Bridge/>
       </Strings>
+
+      <PickupSlider
+        setIsMoving={setIsPickupMoving}
+        handleChange={handleInputValuesChange}/>
 
       <InputSection>
         <h2>Controls</h2>
@@ -111,17 +124,47 @@ const PageWrapper = styled.div`
 `;
 
 const Strings = styled.div`
-  margin: 42px;
+  position: relative;
+  margin: 42px 42px 0 42px;
   &:hover {
     cursor: url("/pick.svg") 8 -20, auto;
   }
 `
 
 const InputSection = styled.div`
-  margin: 42px;
+  margin: 42px 42px;
 `;
 
 const ResultSection = styled.div`
   margin: 60px 42px;
+`;
+
+const Bridge = styled.div`
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 100%;
+  width: 50px;
+  background-image: url('/bridge.svg');
+  background-repeat: no-repeat;
+  background-position: 15px 0;
+  background-size: contain;
+  z-index: 10;
+`
+
+const Pickup = styled.div`
+  position: absolute;
+  top: 0;
+  height: 100%;
+  width: 80px;
+  border-radius: 12px;
+  background-color: #282828;
+  opacity: ${p => p.isMoving ? 0.8 : 1};
+  border: 1px solid ${p => p.isMoving ? "#25C8FC" : "#525252"};
+  //background-color: ${p => p.isMoving ? "green" : "red"};
+  left: ${p => p.position }px;
+  z-index: ${p => p.isMoving ? 10 : 0};
+  box-shadow: ${p => p.isMoving ? "0px 8px 12px rgba(0, 0, 0, 1)" : "inherit"};
+  transition: box-shadow 300ms ease;
 `;
 
