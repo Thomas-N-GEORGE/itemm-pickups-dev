@@ -103,15 +103,16 @@ const Wrapper = styled.div`
   overflow: hidden;
   width: 1200px;
   padding-bottom: 80px;
-  margin: auto;
+  margin: 90px auto auto auto;
   z-index: 12;
   background-color: rgba(51, 51, 51, 0.1);
   border: 1px solid #1a1a1a;
   border-radius: 21px;
-  box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.45);
+  box-shadow: 5px 5px 25px 5px rgba(0,0,0,0.45);
+  background-image: url('/grid.png');
 
   @supports ((-webkit-backdrop-filter: none) or (backdrop-filter: none)) {
-    background-color: rgba(16, 16, 16, 0.2);
+    background-color: rgba(14, 14, 14, 0.4);
     -webkit-backdrop-filter: blur(16px);
     backdrop-filter: blur(16px);
   }

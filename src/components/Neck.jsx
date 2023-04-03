@@ -133,7 +133,7 @@ const Wrapper = styled.div`
 
     span {
       font-size: 12px;
-      margin-top: 12px;
+      margin-top: 16px;
       text-align: center;
       width: 4.76%;
       color: rgba(255, 255, 255, 0.72);

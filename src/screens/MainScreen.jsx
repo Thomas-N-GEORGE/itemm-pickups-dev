@@ -9,6 +9,9 @@ import PickupSlider from "../components/Slider";
 import Neck from "../components/Neck";
 import { controls, strings } from "../settings"
 import ControlValueRow from "../components/ControlValueRow";
+import ToggleInput from "../components/inputs/ToggleSwitch";
+
+
 
 export default function MainScreen() {
 
@@ -29,19 +32,21 @@ export default function MainScreen() {
     setNeckActive(!neckActive);
   }
 
+  const getPickupPosition = () => {
+    const pickupSize = inputValues["pickupType"] === "double" ? 108 : 54;
+    return inputValues["pickupPosition"] * ((880 - pickupSize - 54) / 170 );
+  }
+
   return (
     <PageWrapper>
-
-      <ResultSection>
-        <h2>Résultats</h2>
-        <Curve data={curveData}/>
-      </ResultSection>
-
-      <PanelSwitch
-        onClick={() => switchPanel()}>
-        <PanelButton active={neckActive} className={"switch-panel_neck"}>NOTES</PanelButton>
-        <PanelButton active={!neckActive} className={"switch-panel_pickup"}>MICRO</PanelButton>
-      </PanelSwitch>
+      <ControlHead>
+        <PanelSwitch
+          onClick={() => switchPanel()}>
+          <PanelButton active={neckActive} className={"switch-panel_neck"}>NOTES</PanelButton>
+          <PanelButton active={!neckActive} className={"switch-panel_pickup"}>MICRO</PanelButton>
+        </PanelSwitch>
+        <ToggleInput label={"Micro double"} handleChange={handleInputValuesChange}/>
+      </ControlHead>
 
 
       <ControlSection isNeckActive={neckActive}>
@@ -60,29 +65,40 @@ export default function MainScreen() {
 
         <Strings
           style={{
-            left: `${neckActive ? 1200 : 0}px`
-          }}>
-
+            left: `${neckActive ? 1200 : 0}px`}}>
           <Pickup
+            type={inputValues["pickupType"]}
             isMoving={isPickupMoving}
-            position={inputValues["pickupPosition"] * ((880 - 134) / 170 )}/>
+            position={getPickupPosition()}>
+            <span/>
+            <span/>
+            <span/>
+            <span/>
+            <span/>
+            <span/>
+          </Pickup>
 
-            { strings.map((str, key) =>
-              <PickupString
-                key={key}
-                settings={str}
-                handleChange={handleInputValuesChanges}/>
-            )
-          }
+          { strings.map((str, key) =>
+            <PickupString
+              key={key}
+              settings={str}
+              handleChange={handleInputValuesChanges}/>
+          )}
 
           <Bridge/>
+
           <div className={"control-bottom"}>
             <PickupSlider
+              pickupType={inputValues["pickupType"]}
               setIsMoving={setIsPickupMoving}
               handleChange={handleInputValuesChange}/>
           </div>
         </Strings>
       </ControlSection>
+
+      <ResultSection>
+        <Curve data={curveData}/>
+      </ResultSection>
 
       <ControlValues>
         <h2>Controls</h2>
@@ -101,15 +117,20 @@ export default function MainScreen() {
 }
 
 const PageWrapper = styled.div`
+  position: relative;
   width: 100vw;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  height: 100vh;
   h2 {
     color: #f4f4f4;
   }
 `;
 
 const ControlSection = styled.div`
-  position: relative;
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
   margin: auto;
   height: 260px;
   width: 1200px;
@@ -135,8 +156,9 @@ const ControlValues = styled.div`
 `;
 
 const ResultSection = styled.div`
+  position: relative;
   width: 1200px;
-  margin: 96px auto;
+  margin: 30px auto 96px auto;
 `;
 
 const Bridge = styled.div`
@@ -154,21 +176,40 @@ const Bridge = styled.div`
 
 const Pickup = styled.div`
   position: absolute;
-  top: 0;
-  height: 100%;
-  width: 80px;
-  border-radius: 12px;
-  background-color: ${p => p.isMoving ? "rgba(6,27,33,0.8)" : "#282828"};
+  top: -12px;
+  height: 269px;
+  width: ${({type}) => type === "double" ? 108 : 54}px;
+  border-radius: ${({type}) => type === "double" ? 16 : 54}px;
+  background-color: #171717;
   border: 1px solid ${p => p.isMoving ? "#25C8FC" : "#525252"};
   left: ${p => p.position }px;
   z-index: ${p => p.isMoving ? 10 : 0};
   box-shadow: ${p => p.isMoving ? "0px 8px 12px rgba(0, 0, 0, 1)" : "inherit"};
   transition: box-shadow 300ms ease;
+  padding-top: 21px;
+  padding-left: 18px;
+  box-sizing: border-box;
+  
+  span {
+    display: ${({type}) => type === "double" ? "none" : "block"};
+    margin-bottom: 17px;
+    height: 14px;
+    width: 14px;
+    border-radius: 14px;
+    background-color: #282828;
+    border: 1px solid #6F6F6F;
+  }
+`;
+
+const ControlHead = styled.div`
+  margin: 42px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 `;
 
 const PanelSwitch = styled.div`
   position: relative;
-  margin-bottom: 42px;
   cursor: pointer;
   color: white;
   margin-left: calc((100% - 1200px) / 2);
