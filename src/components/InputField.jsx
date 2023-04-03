@@ -23,6 +23,7 @@ export default function InputField({
 
   const [focused, setIsFocused] = useState(false);
 
+
   const handleKeyDown = (e) => {
     if (e.key === 'Enter') {
       e.target.blur();

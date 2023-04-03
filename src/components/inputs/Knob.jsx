@@ -11,7 +11,6 @@ export default function Knob({handleChange, inputKey}){
 
   return(
     <Wrapper>
-
     </Wrapper>
   )
 

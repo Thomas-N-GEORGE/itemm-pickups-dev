@@ -4,7 +4,7 @@ import { useState } from "react";
 
 export default function PickupSlider({handleChange, setIsMoving}) {
 
-  const [position, setPosition] = useState(1)
+  const [position, setPosition] = useState(80)
 
   const onValueChange = (e) => {
     // e.preventDefault();
@@ -31,9 +31,9 @@ export default function PickupSlider({handleChange, setIsMoving}) {
 const PickupContainer = styled.div`
 
   position: relative;
-  width: calc(100% - 124px);
+  width: calc(100% - 54px - 37 - 37px);
   height: 24px;
-  margin: 12px 42px 0 42px;
+  margin: 12px 91px 0 37px;
   overflow: visible;
 
   input {

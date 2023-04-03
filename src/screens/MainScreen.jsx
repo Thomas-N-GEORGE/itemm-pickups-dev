@@ -1,64 +1,19 @@
 import styled from "styled-components";
-import InputField from "../components/InputField";
 import { useInputValues } from "../hooks/InputsValues";
 import { useEffect, useState } from "react";
-import { arrayToObj } from "../utils/convert";
+import { arrayToObj } from "../utils/arrays";
 import Curve from "../components/Curve";
 import compute from "../functions/compute";
-import String from "../components/String";
+import PickupString from "../components/strings/PickupString";
 import PickupSlider from "../components/Slider";
-import useWindowDimensions from "../hooks/windowDimensions";
-
-
-const strings = [
-  { name: "E2", size: 1, stripes: false},
-  { name: "B", size: 1.4, stripes: false},
-  { name: "G", size: 1.8, stripes: false},
-  { name: "D", size: 2, stripes: true},
-  { name: "A", size: 2.2, stripes: true},
-  { name: "E", size: 2.4, stripes: true},
-]
-const controls = [
-  {
-    key: "pickupPosition",
-    defaultValue: 12,
-    label: "Position du micro (mm)",
-    type: "number",
-    linked: true,
-  },
-  {
-    key: "excitementPosition",
-    defaultValue: 100,
-    label: "Position d'excitation (mm)",
-    type: "number",
-    linked: true,
-  },
-  {
-    key: "pickupType",
-    defaultValue: "simple",
-    label: "Type de micro (simple/double)",
-    type: "text",
-    linked: false,
-  },
-  {
-    key: "stringLength",
-    defaultValue: 32,
-    label: "Longueur de corde (mm)",
-    type: "number",
-    linked: false,
-  },
-  {
-    key: "selectedString",
-    defaultValue: "E",
-    label: "Corde jouée (1/6)",
-    type: "text",
-    linked: true,
-  }
-]
+import Neck from "../components/Neck";
+import { controls, strings } from "../settings"
+import ControlValueRow from "../components/ControlValueRow";
 
 export default function MainScreen() {
 
   const [isPickupMoving, setIsPickupMoving] = useState();
+  const [neckActive, setNeckActive] = useState(true);
 
   const [inputValues, handleInputValuesChange, handleInputValuesChanges] = useInputValues(
     arrayToObj(controls, "key", "defaultValue")
@@ -66,11 +21,13 @@ export default function MainScreen() {
 
   const [curveData, setCurveData] = useState([]);
 
-  const { width } = useWindowDimensions();
-
   useEffect(() => {
     setCurveData(compute(inputValues));
   }, [inputValues])
+
+  const switchPanel = () => {
+    setNeckActive(!neckActive);
+  }
 
   return (
     <PageWrapper>
@@ -80,38 +37,53 @@ export default function MainScreen() {
         <Curve data={curveData}/>
       </ResultSection>
 
-      <Strings>
-        <Pickup
-          isMoving={isPickupMoving}
-          position={inputValues["pickupPosition"] * ((width - 204) / 170 )} />
-        { strings.map((str, key) =>
-            <String
-              key={key}
-              settings={{name: str.name, size: str.size, stripes: str.stripes}}
-              handleChange={handleInputValuesChanges}/>
-          )
-        }
-        <Bridge/>
-      </Strings>
+      <PanelSwitch
+        onClick={() => switchPanel()}>
+        <PanelButton active={neckActive} className={"switch-panel_neck"}>NOTES</PanelButton>
+        <PanelButton active={!neckActive} className={"switch-panel_pickup"}>MICRO</PanelButton>
+      </PanelSwitch>/
 
-      <PickupSlider
-        setIsMoving={setIsPickupMoving}
-        handleChange={handleInputValuesChange}/>
+      <ControlSection>
+        <Neck
+          active={neckActive}
+          handleChange={handleInputValuesChange}/>
+        <Strings
+          style={{
+            left: `${neckActive ? 1200 : 0}px`
+          }}>
 
-      <InputSection>
+          <Pickup
+            isMoving={isPickupMoving}
+            position={inputValues["pickupPosition"] * ((1200 - 134) / 170 )}/>
+
+            { strings.map((str, key) =>
+              <PickupString
+                key={key}
+                settings={str}
+                handleChange={handleInputValuesChanges}/>
+            )
+          }
+
+          <Bridge/>
+          <div className={"control-bottom"}>
+            <PickupSlider
+              setIsMoving={setIsPickupMoving}
+              handleChange={handleInputValuesChange}/>
+          </div>
+        </Strings>
+      </ControlSection>
+
+      <ControlValues>
         <h2>Controls</h2>
         { controls.map((control, key) =>
-          <InputField
-            linkedValue={control.linked ? inputValues[control.key] : null}
+          <ControlValueRow
             key={key}
-            type={control.type}
             label={control.label}
-            inputKey={control.key}
-            defaultValue={control.defaultValue}
-            handleChange={handleInputValuesChange}
-          />
-        )}
-      </InputSection>
+            type={control.type}
+            value={inputValues[control.key]}>
+          </ControlValueRow>
+          )}
+      </ControlValues>
 
     </PageWrapper>
   )
@@ -123,16 +95,30 @@ const PageWrapper = styled.div`
   }
 `;
 
-const Strings = styled.div`
+const ControlSection = styled.div`
   position: relative;
-  margin: 42px 42px 0 42px;
-  &:hover {
-    cursor: url("/pick.svg") 8 -20, auto;
+  margin: auto;
+  height: 260px;
+  width: 1200px;
+  overflow: hidden;
+`
+
+const Strings = styled.div`
+  position: absolute;
+  left: 0;
+  width: 1200px;
+  height: 200px;
+  transition: left 600ms ease;
+
+  .control-bottom {
+    width: 100%;
+    height: 60px;
   }
 `
 
-const InputSection = styled.div`
-  margin: 42px 42px;
+const ControlValues = styled.div`
+  width: 1200px;
+  margin: 80px auto;
 `;
 
 const ResultSection = styled.div`
@@ -144,10 +130,10 @@ const Bridge = styled.div`
   right: 0;
   top: 0;
   height: 100%;
-  width: 50px;
+  width: 54px;
   background-image: url('/bridge.svg');
   background-repeat: no-repeat;
-  background-position: 15px 0;
+  background-position: 0 0;
   background-size: contain;
   z-index: 10;
 `
@@ -164,5 +150,19 @@ const Pickup = styled.div`
   z-index: ${p => p.isMoving ? 10 : 0};
   box-shadow: ${p => p.isMoving ? "0px 8px 12px rgba(0, 0, 0, 1)" : "inherit"};
   transition: box-shadow 300ms ease;
+`;
+
+const PanelSwitch = styled.div`
+  position: relative;
+  cursor: pointer;
+  color: white;
+  margin-left: calc((100% - 1200px) / 2);
+`;
+
+const PanelButton = styled.span`
+  margin-right: 18px;
+  opacity: ${({active}) => active ? 1 : 0.66};
+  font-weight: ${({active}) => active ? 600 : 400};
+  letter-spacing: 1px;
 `;
 

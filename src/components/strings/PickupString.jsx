@@ -1,9 +1,9 @@
 import styled from "styled-components";
 import { useState } from "react";
-import useWindowDimensions from "../hooks/windowDimensions";
+import useWindowDimensions from "../../hooks/windowDimensions";
 
 
-export default function String({settings, handleChange}) {
+export default function PickupString({settings, handleChange}) {
 
   const [pickX, setPickX] = useState(0);
   const [showPick, setShowPick] = useState(false);
@@ -13,12 +13,12 @@ export default function String({settings, handleChange}) {
   const { width } = useWindowDimensions();
 
   const handleMouseEnter = (e) => {
-    setPickX(e.clientX - 42);
+    setPickX(e.clientX - ((width - 1200) / 2));
     setShowPick(true);
   }
 
   const handleMouseMove = (e) => {
-    setPickX(e.clientX - 42);
+    setPickX(e.clientX - ((width - 1200) / 2));
   }
 
   const handleMouseLeave = () => {
@@ -26,9 +26,12 @@ export default function String({settings, handleChange}) {
   }
 
   const vibrate = (e) => {
+
+    let leftGap = ((width - 1200) / 2)
+
     handleChange({
       "selectedString": name,
-      "excitementPosition": Math.trunc(170 - (e.clientX * (170 / (width - 34) )) )
+      "excitementPosition": Math.trunc(170 - ((e.clientX - leftGap) * (170 / (1200 - 54) )) ) + 1
     })
     setVibration(true);
     setTimeout(() => {
@@ -55,8 +58,15 @@ export default function String({settings, handleChange}) {
 
 const StringContainer = styled.div`
   position: relative;
-  height: 30px;
-  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 16.66%;
+  width: calc(100% - 50px);
+
+  &:hover {
+    cursor: url("/pick.svg") 8 -20, auto;
+  }
 
   .hide-pick {
     transform: scale(0);
@@ -68,23 +78,23 @@ const StringContainer = styled.div`
     animation-duration: 0.1s;
     animation-iteration-count: 15;
     animation-name: vibrate;
-    background-color: #6db5cc;
+    background-color: #5bbad9;
 
     @keyframes vibrate {
       0% {
-        top: 14px;
+        top: 0;
       }
       25% {
-        top: 11px;
+        top: -3px;
       }
       50% {
-        top: 14px;
+        top: 0;
       }
       75% {
-        top: 17px;
+        top: 3px;
       }
       100% {
-        top: 14px;
+        top: 0;
       }
     }
   }
@@ -94,8 +104,7 @@ const StringLine = styled.div`
   position: relative;
   height: ${p => p.size}px;
   width: 100%;
-  top: 14px;
-  background-color: #a9a9a9;
+  background-color: #777777;
   background-image: ${p => p.stripes ? "url('/stripes.svg')" : "none"};
 `;
 

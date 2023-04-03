@@ -10,9 +10,11 @@
     "@visx/curve": "^2.1.0",
     "@visx/mock-data": "^2.15.1",
     "@visx/shape": "^2.12.2",
+    "chroma-js": "^2.4.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-scripts": "5.0.1",
+    "spectrogram": "^0.0.7",
     "styled-components": "^5.3.6",
     "web-vitals": "^2.1.4"
   },
