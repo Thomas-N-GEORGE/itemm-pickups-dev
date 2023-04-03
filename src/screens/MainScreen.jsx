@@ -41,12 +41,23 @@ export default function MainScreen() {
         onClick={() => switchPanel()}>
         <PanelButton active={neckActive} className={"switch-panel_neck"}>NOTES</PanelButton>
         <PanelButton active={!neckActive} className={"switch-panel_pickup"}>MICRO</PanelButton>
-      </PanelSwitch>/
+      </PanelSwitch>
 
-      <ControlSection>
+
+      <ControlSection isNeckActive={neckActive}>
+
+        <GuitarBackground
+          isNeckActive={neckActive}
+          src={'/guitar-body.svg'}/>
+
+        <GuitarNeck
+          isNeckActive={neckActive}
+          src={'/guitar-neck.svg'}/>
+
         <Neck
           active={neckActive}
           handleChange={handleInputValuesChange}/>
+
         <Strings
           style={{
             left: `${neckActive ? 1200 : 0}px`
@@ -54,7 +65,7 @@ export default function MainScreen() {
 
           <Pickup
             isMoving={isPickupMoving}
-            position={inputValues["pickupPosition"] * ((1200 - 134) / 170 )}/>
+            position={inputValues["pickupPosition"] * ((880 - 134) / 170 )}/>
 
             { strings.map((str, key) =>
               <PickupString
@@ -90,6 +101,8 @@ export default function MainScreen() {
 }
 
 const PageWrapper = styled.div`
+  width: 100vw;
+  overflow: hidden;
   h2 {
     color: #f4f4f4;
   }
@@ -100,13 +113,13 @@ const ControlSection = styled.div`
   margin: auto;
   height: 260px;
   width: 1200px;
-  overflow: hidden;
+  overflow: visible;
 `
 
 const Strings = styled.div`
   position: absolute;
   left: 0;
-  width: 1200px;
+  width: 880px;
   height: 200px;
   transition: left 600ms ease;
 
@@ -122,7 +135,8 @@ const ControlValues = styled.div`
 `;
 
 const ResultSection = styled.div`
-  margin: 60px 42px;
+  width: 1200px;
+  margin: 96px auto;
 `;
 
 const Bridge = styled.div`
@@ -154,9 +168,11 @@ const Pickup = styled.div`
 
 const PanelSwitch = styled.div`
   position: relative;
+  margin-bottom: 42px;
   cursor: pointer;
   color: white;
   margin-left: calc((100% - 1200px) / 2);
+  z-index: 10
 `;
 
 const PanelButton = styled.span`
@@ -165,4 +181,20 @@ const PanelButton = styled.span`
   font-weight: ${({active}) => active ? 600 : 400};
   letter-spacing: 1px;
 `;
+
+const GuitarBackground = styled.img`
+  position: absolute;
+  top: -470px;
+  left: ${({isNeckActive}) => isNeckActive ? 800 : -400}px;
+  z-index: -1;
+  transition: left 600ms ease;
+`;
+
+const GuitarNeck = styled.img`
+  position: absolute;
+  top: -130px;
+  right: ${({isNeckActive}) => isNeckActive ? 1200 : -2400}px;
+  z-index: -1;
+  transition: left 600ms ease;
+`
 

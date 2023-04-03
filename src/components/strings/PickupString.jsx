@@ -31,7 +31,7 @@ export default function PickupString({settings, handleChange}) {
 
     handleChange({
       "selectedString": name,
-      "excitementPosition": Math.trunc(170 - ((e.clientX - leftGap) * (170 / (1200 - 54) )) ) + 1
+      "excitementPosition": Math.trunc(170 - ((e.clientX - leftGap) * (170 / (880 - 54) )) ) + 1
     })
     setVibration(true);
     setTimeout(() => {
@@ -62,7 +62,7 @@ const StringContainer = styled.div`
   flex-direction: column;
   justify-content: center;
   height: 16.66%;
-  width: calc(100% - 50px);
+  width: calc(880px - 54px);
 
   &:hover {
     cursor: url("/pick.svg") 8 -20, auto;
