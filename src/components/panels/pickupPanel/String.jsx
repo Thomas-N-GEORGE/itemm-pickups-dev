@@ -37,6 +37,7 @@ export default function String({settings}) {
       { ...strings,
         "vibrating": name,
         "selected": name,
+        "crosshairPosition": crosshairX,
         "excitementPosition": excitementPosition
       })
 

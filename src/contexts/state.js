@@ -17,6 +17,7 @@ const AppStateProvider = ({children}) => {
   const [strings, setStrings] = useState({
     selected: null,
     excitementPosition: 0,
+    crosshairPosition: 0,
     vibrating: null
   });
 
@@ -48,6 +49,7 @@ const AppStateProvider = ({children}) => {
         pickupPosition: (pickup.rangeValue * - 1) + 170,
         pickupDouble: pickup.double,
         selectedNotes: notes.map(n => n+1).reverse(),
+        crosshairPosition: strings.crosshairPosition,
         excitementPosition: strings.excitementPosition,
         selectedString: strings.selected
       })
