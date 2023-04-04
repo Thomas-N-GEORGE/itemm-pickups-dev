@@ -32,7 +32,7 @@ export default function PickupPanel({isActive}) {
       <Bridge/>
 
       <PickPositionLabel style={{left: controlValues.crosshairPosition - 35}}>
-        {controlValues.excitementPosition}
+        {controlValues.excitementPosition} mm
         <div className={"crosshair-line"} style={{height: notesMapY[controlValues.selectedString]}}/>
       </PickPositionLabel>
 
