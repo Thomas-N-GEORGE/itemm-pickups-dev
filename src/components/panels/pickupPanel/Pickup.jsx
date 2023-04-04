@@ -9,12 +9,21 @@ export default function Pickup() {
   const { pickup } = useContext(AppCtx);
 
   return (
-    <PickupView
-      double={pickup.double}
-      isMoving={pickup.isMoving}
-      position={pickup.position}>
-      {renderCircles()}
-    </PickupView>
+    <>
+      <PickupView
+        double={pickup.double}
+        isMoving={pickup.isMoving}
+        position={pickup.position}>
+        {renderCircles()}
+      </PickupView>
+      <PositionLabel
+        style={{
+          left: pickup.position + (pickup.double ? 10  : -20)
+        }}>
+        {(pickup.rangeValue * -1) + 170} mm
+      </PositionLabel>
+    </>
+
   )
 }
 
@@ -50,5 +59,27 @@ const PickupView = styled.div`
     border-radius: 14px;
     background-color: #282828;
     border: 1px solid #6F6F6F;
+  }
+`;
+
+const PositionLabel = styled.span`
+  position: absolute;
+  display: inline-block;
+  text-align: center;
+  width: 60px;
+  top: -60px;
+  background-color: black;
+  color: white;
+  border-radius: 40px;
+  padding: 6px 16px;
+  white-space: nowrap;
+
+  &:before {
+    position: absolute;
+    left: 46px;
+    content: "";
+    height: 54px;
+    border-left: 1px dashed #565656;
+    z-index: -1;
   }
 `;
