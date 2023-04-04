@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { useState } from "react";
 import useSound from 'use-sound';
-export default function ToggleInput({label, handleChange}) {
+export default function ToggleInput({label, onToggle}) {
 
   const [play] = useSound('/sounds/switch-off.mp3');
 
@@ -9,7 +9,7 @@ export default function ToggleInput({label, handleChange}) {
 
   const handleClick = () => {
     play();
-    handleChange("pickupType", active ? "simple" : "double");
+    onToggle(!active);
     setActive(!active);
   }
 

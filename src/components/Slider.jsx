@@ -1,38 +1,49 @@
 import styled from "styled-components";
-import { useState } from "react";
+import { useContext } from "react";
 import useSound from "use-sound";
+import { AppCtx } from "../contexts/state";
 
 
 const bridgeWidth = 54;
 
-export default function PickupSlider({handleChange, setIsMoving, pickupType}) {
+export default function PickupSlider() {
 
-  const [position, setPosition] = useState(80)
+  const { pickup, update } = useContext(AppCtx);
 
   const [play] = useSound('/sounds/switch-on.mp3',
     { volume: 0.5 });
 
   const onValueChange = (e) => {
     // e.preventDefault();
-    const value = parseFloat(e.target.valueAsNumber);
-    handleChange('pickupPosition', value);
-    setPosition(value);
+    const rangeValue = parseFloat(e.target.valueAsNumber);
+    const pickupSize = pickup.double ? 108 : 54;
+    const position = rangeValue * ((880 - pickupSize - 54) / 170 );
+
+    update('pickup', {
+      ...pickup,
+      position: position,
+      rangeValue: rangeValue,
+    });
+  }
+
+  const handleMouseDown = () => {
+    update('pickup', {...pickup, isMoving: true});
   }
 
   const handleMouseUp = () => {
     play();
-    setIsMoving(false);
+    update('pickup', {...pickup, isMoving: false});
   }
 
   return(
-    <InputContainer pickupWidth={pickupType === "double" ? 108 : 54}>
+    <InputContainer pickupWidth={pickup.double ? 108 : 54}>
       <input
         type={"range"}
-        value={position}
+        value={pickup.rangeValue}
         min={0}
         max={170}
         onChange={(e) => onValueChange(e)}
-        onMouseDown={() => setIsMoving(true)}
+        onMouseDown={() => handleMouseDown()}
         onMouseUp={() => handleMouseUp()}
       />
     </InputContainer>
@@ -84,17 +95,11 @@ const InputContainer = styled.div`
     background-color: transparent;
     border-top: none;
     border-bottom: none;
-    width: 5px;
+    width: 8px;
     height: 18px;
     border-left: 1px solid #b2afaf;
     border-right: 1px solid #b2afaf;
     border-radius: 0;
     cursor: grab;
   }
-
-  //input::-webkit-slider-thumb {
-  //  height: 12px;
-  //  transform: translateY(-100px);
-  //  cursor: grab;
-  //}
 `;

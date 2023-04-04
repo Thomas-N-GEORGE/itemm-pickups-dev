@@ -8,6 +8,9 @@ export default function ControlValueRow({label, value, type}) {
   if(type === 'array') {
     value = arrayToStr(value);
   }
+  if(type === 'bool') {
+    value = value ? "Oui" : "Non"
+  }
   return(
     <Wrapper>
       <p className={"control-label"}>{label}</p>

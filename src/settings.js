@@ -1,4 +1,4 @@
-const strings = [
+const stringSettings = [
   {
     "name": "E2",
     "size": 0.6,
@@ -31,7 +31,7 @@ const strings = [
   }
 ];
 
-const controls = [
+const controlSettings = [
   {
     "key": "pickupPosition",
     "defaultValue": 80,
@@ -57,11 +57,11 @@ const controls = [
     "type": "text",
   },
   {
-    "key": "pickupType",
-    "defaultValue": "simple",
-    "label": "Type de micro (simple/double)",
-    "type": "text",
+    "key": "pickupDouble",
+    "defaultValue": false,
+    "label": "Micro double",
+    "type": "bool",
   }
 ];
 
-export { strings , controls }
+export { stringSettings , controlSettings }

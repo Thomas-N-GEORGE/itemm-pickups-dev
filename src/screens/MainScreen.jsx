@@ -1,40 +1,35 @@
 import styled from "styled-components";
-import { useInputValues } from "../hooks/InputsValues";
-import { useEffect, useState } from "react";
-import { arrayToObj } from "../utils/arrays";
+import { useContext, useState } from "react";
 import Curve from "../components/Curve";
-import compute from "../functions/compute";
-import PickupString from "../components/strings/PickupString";
-import PickupSlider from "../components/Slider";
-import Neck from "../components/Neck";
-import { controls, strings } from "../settings"
+import { controlSettings } from "../settings"
 import ControlValueRow from "../components/ControlValueRow";
 import ToggleInput from "../components/inputs/ToggleSwitch";
-
-
+import { PickupPanel } from "../components/panels";
+import { AppCtx } from "../contexts/state";
+import NeckPanel from "../components/panels/neckPanel";
 
 export default function MainScreen() {
 
-  const [isPickupMoving, setIsPickupMoving] = useState();
+  const {
+    pickup,
+    controlValues,
+    computedData,
+    update
+  } = useContext(AppCtx);
+
   const [neckActive, setNeckActive] = useState(true);
-
-  const [inputValues, handleInputValuesChange, handleInputValuesChanges] = useInputValues(
-    arrayToObj(controls, "key", "defaultValue")
-  )
-
-  const [curveData, setCurveData] = useState([]);
-
-  useEffect(() => {
-    setCurveData(compute(inputValues));
-  }, [inputValues])
 
   const switchPanel = () => {
     setNeckActive(!neckActive);
   }
 
-  const getPickupPosition = () => {
-    const pickupSize = inputValues["pickupType"] === "double" ? 108 : 54;
-    return inputValues["pickupPosition"] * ((880 - pickupSize - 54) / 170 );
+  const changePickup = (double) => {
+    let size = double ? 108 : 54;
+    update("pickup", {
+      ...pickup,
+      double: double,
+      position: pickup.rangeValue * ((880 - size - 54) / 170 )
+    })
   }
 
   return (
@@ -45,69 +40,35 @@ export default function MainScreen() {
           <PanelButton active={neckActive} className={"switch-panel_neck"}>NOTES</PanelButton>
           <PanelButton active={!neckActive} className={"switch-panel_pickup"}>MICRO</PanelButton>
         </PanelSwitch>
-        <ToggleInput label={"Micro double"} handleChange={handleInputValuesChange}/>
+        <ToggleInput
+          label={"Micro double"}
+          onToggle={(value) => changePickup(value)}/>
       </ControlHead>
 
 
       <ControlSection isNeckActive={neckActive}>
-
         <GuitarBackground
           isNeckActive={neckActive}
           src={'/guitar-body.svg'}/>
-
         <GuitarNeck
           isNeckActive={neckActive}
           src={'/guitar-neck.svg'}/>
-
-        <Neck
-          active={neckActive}
-          handleChange={handleInputValuesChange}/>
-
-        <Strings
-          style={{
-            left: `${neckActive ? 1200 : 0}px`}}>
-          <Pickup
-            type={inputValues["pickupType"]}
-            isMoving={isPickupMoving}
-            position={getPickupPosition()}>
-            <span/>
-            <span/>
-            <span/>
-            <span/>
-            <span/>
-            <span/>
-          </Pickup>
-
-          { strings.map((str, key) =>
-            <PickupString
-              key={key}
-              settings={str}
-              handleChange={handleInputValuesChanges}/>
-          )}
-
-          <Bridge/>
-
-          <div className={"control-bottom"}>
-            <PickupSlider
-              pickupType={inputValues["pickupType"]}
-              setIsMoving={setIsPickupMoving}
-              handleChange={handleInputValuesChange}/>
-          </div>
-        </Strings>
+        <NeckPanel isActive={neckActive}/>
+        <PickupPanel isActive={!neckActive}/>
       </ControlSection>
 
       <ResultSection>
-        <Curve data={curveData}/>
+        <Curve data={computedData}/>
       </ResultSection>
 
       <ControlValues>
         <h2>Controls</h2>
-        { controls.map((control, key) =>
+        { controlSettings.map((control, key) =>
           <ControlValueRow
             key={key}
             label={control.label}
             type={control.type}
-            value={inputValues[control.key]}>
+            value={controlValues[control.key]}>
           </ControlValueRow>
           )}
       </ControlValues>
@@ -137,19 +98,6 @@ const ControlSection = styled.div`
   overflow: visible;
 `
 
-const Strings = styled.div`
-  position: absolute;
-  left: 0;
-  width: 880px;
-  height: 200px;
-  transition: left 600ms ease;
-
-  .control-bottom {
-    width: 100%;
-    height: 60px;
-  }
-`
-
 const ControlValues = styled.div`
   width: 1200px;
   margin: 80px auto;
@@ -161,45 +109,6 @@ const ResultSection = styled.div`
   margin: 30px auto 96px auto;
 `;
 
-const Bridge = styled.div`
-  position: absolute;
-  right: 0;
-  top: 0;
-  height: 100%;
-  width: 54px;
-  background-image: url('/bridge.svg');
-  background-repeat: no-repeat;
-  background-position: 0 0;
-  background-size: contain;
-  z-index: 10;
-`
-
-const Pickup = styled.div`
-  position: absolute;
-  top: -12px;
-  height: 269px;
-  width: ${({type}) => type === "double" ? 108 : 54}px;
-  border-radius: ${({type}) => type === "double" ? 16 : 54}px;
-  background-color: #171717;
-  border: 1px solid ${p => p.isMoving ? "#25C8FC" : "#525252"};
-  left: ${p => p.position }px;
-  z-index: ${p => p.isMoving ? 10 : 0};
-  box-shadow: ${p => p.isMoving ? "0px 8px 12px rgba(0, 0, 0, 1)" : "inherit"};
-  transition: box-shadow 300ms ease;
-  padding-top: 21px;
-  padding-left: 18px;
-  box-sizing: border-box;
-  
-  span {
-    display: ${({type}) => type === "double" ? "none" : "block"};
-    margin-bottom: 17px;
-    height: 14px;
-    width: 14px;
-    border-radius: 14px;
-    background-color: #282828;
-    border: 1px solid #6F6F6F;
-  }
-`;
 
 const ControlHead = styled.div`
   margin: 42px;

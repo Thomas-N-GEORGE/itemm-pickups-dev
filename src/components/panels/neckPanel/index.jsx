@@ -1,20 +1,8 @@
 import styled from "styled-components";
-import { useEffect, useState } from "react";
-import { strings } from "../settings";
-import NeckString from "./strings/NeckString";
-
-const dotPositions = [
-  "22",
-  "24",
-  "26",
-  "29",
-  "111",
-  "311",
-  "214",
-  "216",
-  "218",
-  "220",
-]
+import { useContext } from "react";
+import { AppCtx } from "../../../contexts/state";
+import { stringSettings } from "../../../settings";
+import String from "./String";
 
 function createBoxes() {
   let arr = new Array(126);
@@ -31,51 +19,55 @@ function createBoxes() {
   return arr;
 }
 
-export default function Neck({active, handleChange}) {
+function renderNumbers() {
+  const cols = []
+  for (let i = 0; i < 21; i++) {
+    cols.push(<span key={`nbr-${i+1}`}>{i+1}</span>);
+  }
+  return cols;
+}
 
+const dotPositions = [
+  "22", "24", "26", "29", "111", "311", "214", "216", "218", "220",
+]
+
+export default function NeckPanel({isActive}) {
+
+  // console.log("Rendering: NeckPanel")
+
+  // todo: utiliser le hook dimension
   const boxWidth = 1200 / 21;
   const boxHeight = 200 / 6;
 
   const boxes = createBoxes()
 
-  const [selectedNotes, setSelectedNotes] = useState([-1, -1, -1, -1, -1, -1])
+  const { notes, update } = useContext(AppCtx);
 
   const handleBoxClick = (box) => {
-    let nextState = selectedNotes;
-    if (selectedNotes[box.y] === box.x) {
-      nextState[box.y] = -1;
+    let nextNotes = notes;
+    if (notes[box.y] === box.x) {
+      nextNotes[box.y] = -1;
     } else {
-      nextState[box.y] = box.x;
+      nextNotes[box.y] = box.x;
     }
-    setSelectedNotes([...nextState]);
-  }
-
-  useEffect(() => {
-    handleChange("selectedNotes", selectedNotes.map(n => n+1).reverse());
-  }, [selectedNotes])
-
-
-  function renderNumbers() {
-    const cols = []
-    for (let i = 0; i < 21; i++) {
-      cols.push(<span key={`nbr-${i+1}`}>{i+1}</span>);
-    }
-    return cols;
+    update("notes", [...nextNotes]);
   }
 
   return (
-    <Wrapper style={{left: `${active ? 0 : -1200}px`}}>
+    <Wrapper style={{left: `${isActive ? 0 : -1200}px`}}>
+      <div className={"neck-background"}/>
       <Boxes>
-        {boxes.map((box, key) =>
+        { boxes.map((box, key) =>
           ( <Box
               style={{
                 top: box.y * boxHeight,
                 left: box.x * boxWidth,
                 width: boxWidth,
-                height: boxHeight
+                height: boxHeight,
+                borderRight: box.x > 19 ? "none" : "0.8px solid #434343"
               }}
               key={key}
-              selected={selectedNotes[box.y] === box.x}
+              selected={notes[box.y] === box.x}
               onClick={() => handleBoxClick(box)}>
               {
                 dotPositions.includes(box.y.toString() + box.x.toString()) &&
@@ -85,23 +77,16 @@ export default function Neck({active, handleChange}) {
           ))
         }
       </Boxes>
-
-
       <Strings>
-        {strings.map((str, key) => <NeckString key={key} settings={str}/>)}
+        {stringSettings.map((str, key) => <String key={key} settings={str}/>)}
       </Strings>
-
-      <div className={"neck-background"}/>
       <div className={"neck-numbers"}>
         {renderNumbers()}
       </div>
-
       <div className={"nut"}/>
-
     </Wrapper>
   )
 }
-
 
 const Wrapper = styled.div`
   position: absolute;
@@ -119,8 +104,19 @@ const Wrapper = styled.div`
     height: 100%;
     background-color: #101010;
     border: 1px solid #262626;
-    border-radius: 6px;
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
     z-index: 0;
+  }
+
+  .nut {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 4px;
+    border-radius: 2px;
+    background-color: #7E7E7E;
   }
 
   .neck-numbers {
@@ -139,16 +135,13 @@ const Wrapper = styled.div`
       color: rgba(255, 255, 255, 0.72);
     }
   }
-  
-  .nut {
-    position: absolute;
-    left: 0;
-    top: 0;
-    height: 100%;
-    width: 4px;
-    border-radius: 2px;
-    background-color: #7E7E7E;
-  }
+`;
+
+const Strings = styled.div`
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  z-index: 1;
 `;
 
 const Boxes = styled.div`
@@ -192,11 +185,4 @@ const Box = styled.div`
     height: 12px;
     background-color: #424242;
   }
-`;
-
-const Strings = styled.div`
-  position: absolute;
-  height: 100%;
-  width: 100%;
-  z-index: 1;
 `;
