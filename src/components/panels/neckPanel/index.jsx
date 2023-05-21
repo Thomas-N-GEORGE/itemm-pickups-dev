@@ -3,6 +3,7 @@ import { useContext } from "react";
 import { AppCtx } from "../../../contexts/state";
 import { stringSettings } from "../../../settings";
 import String from "./String";
+import useWindowDimensions from "../../../hooks/windowDimensions";
 
 function createBoxes() {
   let arr = new Array(126);
@@ -27,6 +28,9 @@ function renderNumbers() {
   return cols;
 }
 
+
+// Chaines de caractères représentant la position des dots sur le manche;
+// Uniquement esthétique.
 const dotPositions = [
   "22", "24", "26", "29", "111", "311", "214", "216", "218", "220",
 ]
@@ -35,9 +39,11 @@ export default function NeckPanel({isActive}) {
 
   // console.log("Rendering: NeckPanel")
 
+  const { neck } = useWindowDimensions();
+
   // todo: utiliser le hook dimension
-  const boxWidth = 1200 / 21;
-  const boxHeight = 200 / 6;
+  const boxWidth = neck.w / 21;
+  const boxHeight = neck.h / 6;
 
   const boxes = createBoxes()
 
@@ -54,7 +60,7 @@ export default function NeckPanel({isActive}) {
   }
 
   return (
-    <Wrapper style={{left: `${isActive ? 0 : -1200}px`}}>
+    <Wrapper style={{left: `${isActive ? 0 : -neck.w}px`}} dimensions={neck}>
       <div className={"neck-background"}/>
       <Boxes>
         { boxes.map((box, key) =>
@@ -92,8 +98,8 @@ const Wrapper = styled.div`
   position: absolute;
   left: 0;
   top: 0;
-  width: 1200px;
-  height: 200px;
+  width: ${({dimensions}) => dimensions.w}px;
+  height: ${({dimensions}) => dimensions.h}px;
   transition: left 600ms ease;
 
   .neck-background {
@@ -121,7 +127,7 @@ const Wrapper = styled.div`
 
   .neck-numbers {
     position: absolute;
-    top: 200px;
+    top: ${({dimensions}) => dimensions.h}px;
     width: 100%;
     height: 60px;
     display: flex;
@@ -147,7 +153,6 @@ const Strings = styled.div`
 const Boxes = styled.div`
   position: absolute;
   width: 100%;
-  height: 200px;
   z-index: 2;
 `;
 

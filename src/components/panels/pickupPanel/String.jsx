@@ -13,24 +13,33 @@ export default function String({settings}) {
 
   const { size, name, stripes } = settings;
 
-  const { width } = useWindowDimensions();
+  const { window, scale } = useWindowDimensions();
 
   const handleMouseEnter = (e) => {
-    setCrosshairX(e.clientX - ((width - 1200) / 2));
+    // distance de la corde à gauche de l'écran
+    let ld = (window.w - (1200 * scale)) / 2;
+    let cx = (e.clientX - ld) / scale;
+    cx = Math.trunc(cx);
+    setCrosshairX(cx);
     setShowCrosshair(true);
   }
 
   const handleMouseMove = (e) => {
-    setCrosshairX(e.clientX - ((width - 1200) / 2));
+    // distance de la corde à gauche de l'écran
+    let ld = (window.w - (1200 * scale)) / 2;
+    let cx = (e.clientX - ld) / scale;
+    cx = Math.trunc(cx);
+    setCrosshairX(cx);
   }
 
   const handleMouseLeave = () => {
     setShowCrosshair(false);
   }
 
+
   const onClick = (e) => {
 
-    let leftMargin = ((width - 1200) / 2);
+    let leftMargin = ((window.w - 1200) / 2);
     let excitementPosition = Math.trunc(170 - ((e.clientX - leftMargin) * (170 / (880 - 54) )) ) + 1
 
     update( "strings",

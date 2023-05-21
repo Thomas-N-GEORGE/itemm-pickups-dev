@@ -6,6 +6,7 @@ import Bridge from "./Bridge";
 import Pickup from "./Pickup";
 import { useContext } from "react";
 import { AppCtx } from "../../../contexts/state";
+import useWindowDimensions from "../../../hooks/windowDimensions";
 
 
 const notesMapY = {
@@ -20,9 +21,10 @@ const notesMapY = {
 export default function PickupPanel({isActive}) {
 
   const {controlValues} = useContext(AppCtx);
+  const { neck } = useWindowDimensions();
 
   return (
-    <Wrapper style={{left: `${isActive ? 0 : 1200}px`}}>
+    <Wrapper style={{left: `${isActive ? 0 : neck.w}px`}}>
       <Pickup/>
 
       {stringSettings.map((str, key) =>
@@ -31,7 +33,7 @@ export default function PickupPanel({isActive}) {
 
       <Bridge/>
 
-      <PickPositionLabel style={{left: controlValues.crosshairPosition - 35}}>
+      <PickPositionLabel style={{left: controlValues?.crosshairPosition - 35 || 0}}>
         {controlValues.excitementPosition} mm
         <div className={"crosshair-line"} style={{height: notesMapY[controlValues.selectedString]}}/>
       </PickPositionLabel>
