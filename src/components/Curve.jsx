@@ -1,7 +1,6 @@
 import styled from "styled-components";
 import { LinePath } from "@visx/shape";
 import { curveBasis } from "@visx/curve";
-import { useState } from "react";
 import useWindowDimensions from "../hooks/windowDimensions";
 
 function getCurveWidth() {
@@ -12,40 +11,10 @@ function getCurveWidth() {
 export default function Curve({data}) {
 
   const dataLength = data.length;
-  // const max = Math.max(...data);
-  // const min = Math.min(...data);
-  const max = 1;
-  const min = -1;
 
-  const diff = max - min;
-  // const increaseRatio = diff / dataLength;
-
-  const [plotsData, setPlotData] = useState({
-    // values: stringArrToObjects(data, false, increaseRatio, min),
-    values: [],
-    end: false
-  });
-
-  const plotsDataFinal = stringArrToObject2(data, false);
-  // const [doAnimation, setDoAnimation] = useState(false)
+  const curveData = createCurveData(data);
 
   const { window } = useWindowDimensions();
-
-  // const maxWidth = Math.max(...data) * ( getCurveWidth() / 1200 )
-  // const maxWidth = getCurveWidth() / 1160;
-
-  function animate() {
-    let end = true
-    let newPlots = plotsData.values.map((plot, key) => {
-      if (plot.y !== Math.round(plotsDataFinal[key].y)) {
-        end = false;
-        let next = plotsDataFinal[key].y > plot.y ? +1 : -1;
-        return {y: plot.y + next, x: plot.x}
-      }
-      return plot;
-    })
-    setPlotData({values: newPlots, end: end});
-  }
 
   return (
     <Wrapper>
@@ -53,7 +22,7 @@ export default function Curve({data}) {
         <svg width={getCurveWidth(window.w)} height={300}>
           <LinePath
             // data={selectedData ? plotsData.values : plotsDataFinal}
-            data={plotsDataFinal}
+            data={curveData}
             curve={curveBasis}
             x={(d) => ( d.x * ( getCurveWidth(window.w) / dataLength ) )}
             y={(d) => d.y * ( getCurveWidth(window.w) / 1160 )}
@@ -67,45 +36,12 @@ export default function Curve({data}) {
   );
 }
 
-function stringArrToObjects(arr, init) {
-
-  let res = []
-  for (const value in arr) {
-    let newY = arr[value];
-    let newX = value
-    if(init) {
-      // newX = value * 2 - start;
-      newX = value
-    }
-    if(init && value > 0 && value < arr.length-1 ){
-      // newY = value * ir + min;
-      newY = 100;
-    }
-    if(init) {
-      newY = 0;
-    }
-    res.push({y: newY, x: newX})
-  }
-  return res;
-}
-
-function stringArrToObject2(arr, init) {
+function createCurveData(arr) {
   let res = [];
   for(let i = 0; i < arr.length; i++ ) {
-    let newY = arr[i] * 300;
-    let newX = i
-    if(init) {
-      // newX = value * 2 - start;
-      newX = i
-    }
-    if(init && i > 0 && i < arr.length-1 ){
-      // newY = value * ir + min;
-      newY = 300;
-    }
-    if(init) {
-      newY = 0;
-    }
-    res.push({y: newY, x: newX})
+    let y = arr[i] * 300;
+    let x = i
+    res.push({y: y, x: x})
   }
   return res;
 }
