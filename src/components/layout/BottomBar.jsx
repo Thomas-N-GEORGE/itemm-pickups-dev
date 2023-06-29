@@ -1,16 +1,33 @@
 import styled from "styled-components";
+import InfoModal from "./InfoModal";
+import { useState } from "react";
 
 
 export default function BottomBar() {
 
-return (
+  const [showInfos, setShowInfos] = useState(false);
+
+  return (
     <Wrapper>
-      <ButtonInfo>
-        <svg width="20" height="20" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path fillRule="evenodd" clipRule="evenodd" d="M14 2C7.37258 2 2 7.37258 2 14C2 20.6274 7.37258 26 14 26C20.6274 26 26 20.6274 26 14C26 7.37258 20.6274 2 14 2ZM0 14C0 6.26802 6.26802 0 14 0C21.732 0 28 6.26802 28 14C28 21.732 21.732 28 14 28C6.26802 28 0 21.732 0 14ZM14 8C14.5523 8 15 8.44772 15 9V9.01C15 9.56229 14.5523 10.01 14 10.01C13.4477 10.01 13 9.56229 13 9.01V9C13 8.44772 13.4477 8 14 8ZM14 12C14.5523 12 15 12.4477 15 13V19C15 19.5523 14.5523 20 14 20C13.4477 20 13 19.5523 13 19V13C13 12.4477 13.4477 12 14 12Z" fill="#F4F4F4"/>
-        </svg>
-        <p>Infos</p>
+
+      <InfoModal isOpen={showInfos}/>
+
+      <ButtonInfo
+        showClose={showInfos}
+        onClick={() => setShowInfos(!showInfos)}>
+        <div className={"button-inner left"}>
+          <svg width="20" height="20" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path fillRule="evenodd" clipRule="evenodd"
+                  d="M14 2C7.37258 2 2 7.37258 2 14C2 20.6274 7.37258 26 14 26C20.6274 26 26 20.6274 26 14C26 7.37258 20.6274 2 14 2ZM0 14C0 6.26802 6.26802 0 14 0C21.732 0 28 6.26802 28 14C28 21.732 21.732 28 14 28C6.26802 28 0 21.732 0 14ZM14 8C14.5523 8 15 8.44772 15 9V9.01C15 9.56229 14.5523 10.01 14 10.01C13.4477 10.01 13 9.56229 13 9.01V9C13 8.44772 13.4477 8 14 8ZM14 12C14.5523 12 15 12.4477 15 13V19C15 19.5523 14.5523 20 14 20C13.4477 20 13 19.5523 13 19V13C13 12.4477 13.4477 12 14 12Z"
+                  fill="#F4F4F4"/>
+          </svg>
+          <p>Infos</p>
+        </div>
+        <div className={"button-inner right"}>
+          <p>Fermer</p>
+        </div>
       </ButtonInfo>
+
     </Wrapper>
   )
 }
@@ -32,6 +49,7 @@ const Wrapper = styled.div`
 `;
 
 const ButtonInfo = styled.button`
+  position: relative;
   height: 36px;
   display: flex;
   align-items: center;
@@ -41,9 +59,39 @@ const ButtonInfo = styled.button`
   border-radius: 42px;
   border: none;
   cursor: pointer;
+  z-index: 110;
+  overflow: hidden;
+  width: ${p => p.showClose ? "88px" : "88px"};
+  
+  .button-inner {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    transition: 400ms ease-in-out;
+  }
+  
+  .left {
+    transform: translateY(${p => p.showClose ? "-100%" : "0"});
+  }
+  
+  .right {
+    margin-left: 18px;
+    transform: translateY(${p => p.showClose ? "0" : "100%"});
+  }
+  
+  .button-inner-right {
+    position: absolute;
+    background-color: green;
+    height: 100%;
+    left: 0;
+  }
 
   svg {
-    margin-left: 4px;
+    margin-left: 12px;
     margin-right: 6px;
   }
 

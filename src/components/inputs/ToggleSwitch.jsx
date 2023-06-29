@@ -1,6 +1,8 @@
 import styled from "styled-components";
 import { useState } from "react";
 import useSound from 'use-sound';
+
+
 export default function ToggleInput({label, onToggle}) {
 
   const [play] = useSound('/sounds/switch-off.mp3');

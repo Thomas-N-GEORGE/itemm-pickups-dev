@@ -40,7 +40,7 @@ const controlSettings = [
   },
   {
     "key": "selectedNotes",
-    "defaultValue": [0,0,0,0,0,0],
+    "defaultValue": [0, 0, 0, 0, 0, 0],
     "label": "Notes sélectionnées",
     "type": "array",
   },
@@ -64,4 +64,19 @@ const controlSettings = [
   }
 ];
 
-export { stringSettings , controlSettings }
+const axesSettings = {
+  x: {
+    min: 0,
+    max: 100,
+    dividers: 10,
+    unit: "XUnit"
+  },
+  y: {
+    min: 0,
+    max: 100,
+    dividers: 10,
+    unit: "YUnit"
+  }
+}
+
+export { stringSettings, controlSettings, axesSettings }

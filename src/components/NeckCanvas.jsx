@@ -1,45 +1,29 @@
 import styled from "styled-components";
 import { useEffect, useRef, useState } from "react";
+import useWindowDimensions from "../hooks/windowDimensions";
 
 
 export default function NeckCanvas() {
 
-  let ctx = null;
-  let canvas = null;
+  const { neck } = useWindowDimensions();
+
   const canvasRef = useRef(null);
+
+  let canvas = null;
+  let ctx = null;
+
+  // Frettes qui seront affichées sur le canvas
   const fretArray = [];
+  // Cases qui seront affichées sur le canvas
   const boxArray = [];
 
-  const boxWidth = 1200 / 21;
-  const boxHeight = 200 / 6;
+  const boxWidth = neck.w / 21;
+  const boxHeight = neck.h / 6;
 
   const [notes, setNotes] = useState([0,0,0,0,0,0]);
 
+  // Contient la note survolée par la souris
   const [hoveredNote, setHoveredNote] = useState(null);
-
-  useEffect(() => {
-
-    canvas = canvasRef.current;
-    canvas.width = 1200;
-    canvas.height = 200;
-
-    ctx = canvas.getContext("2d");
-
-    canvas.onmousemove = (e) => {
-
-      let rect = canvas.getBoundingClientRect();
-      let cursorPosition = {
-        x: e.clientX - rect.left,
-        y: e.clientY - rect.top
-      }
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      drawCanvas(cursorPosition)
-    }
-
-    drawCanvas(null);
-
-  }, [])
-
 
   /**
    * Fret
@@ -47,7 +31,7 @@ export default function NeckCanvas() {
    */
   class Fret {
     constructor(x) {
-      this.x = x * 1200 / 21;
+      this.x = x * neck.w / 21;
     }
     draw() {
       ctx.strokeStyle = "rgb(93,93,93)";
@@ -86,6 +70,27 @@ export default function NeckCanvas() {
     }
   }
 
+  useEffect(() => {
+
+    canvas = canvasRef.current;
+    canvas.width = neck.w;
+    canvas.height = neck.h;
+
+    ctx = canvas.getContext("2d");
+
+    canvas.onmousemove = (e) => {
+      let rect = canvas.getBoundingClientRect();
+      let cursorPosition = {
+        x: e.clientX - rect.left,
+        y: e.clientY - rect.top
+      }
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      drawCanvas(cursorPosition)
+    }
+    drawCanvas(null);
+  }, [])
+
+
   const drawCanvas = (cursorPositon) => {
     let boxCnt = 0;
     for(let i=0 ; i<21 ; i++) {
@@ -109,16 +114,15 @@ export default function NeckCanvas() {
   }
 
   return (
-    <Wrapper onClick={() => handleClick()}>
+    <Wrapper onClick={() => handleClick()} dimensions={neck}>
       <canvas ref={canvasRef} />
     </Wrapper>
   )
-
 }
 
 const Wrapper = styled.div`
   margin: auto;
-  width: 1200px;
-  height: 200px;
+  width: ${({dimensions})  => dimensions.w}px;
+  height: ${({dimensions}) => dimensions.h}px;
   border: 1px solid rgba(250, 128, 114, 0.32);
 `;

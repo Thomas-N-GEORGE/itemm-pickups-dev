@@ -30,7 +30,7 @@ function compute(inputValues) {
 		let f = Math.min(Math.max(getSampleAt(i / sps), 0), 1);
 		data += put(Math.floor(f * ( 2 ** ( bps * 8 ) - 1 )), bps);
 
-		if(i === prev + 240) {
+		if(i === prev + 300) {
 			frequencies[current] = f;
 			current++;
 			prev = i;

@@ -1,12 +1,7 @@
 import styled from "styled-components";
 import { LinePath } from "@visx/shape";
 import { curveBasis } from "@visx/curve";
-import useWindowDimensions from "../hooks/windowDimensions";
-
-function getCurveWidth() {
-  // Todo: adapter la marge suivant les différentes tailles d'écran
-  return 1160;
-}
+import Axes from "./Axes";
 
 export default function Curve({data}) {
 
@@ -14,23 +9,22 @@ export default function Curve({data}) {
 
   const curveData = createCurveData(data);
 
-  const { window } = useWindowDimensions();
-
   return (
     <Wrapper>
       <SvgWrapper>
-        <svg width={getCurveWidth(window.w)} height={300}>
+        <svg width={1080} height={300}>
           <LinePath
             // data={selectedData ? plotsData.values : plotsDataFinal}
             data={curveData}
             curve={curveBasis}
-            x={(d) => ( d.x * ( getCurveWidth(window.w) / dataLength ) )}
-            y={(d) => d.y * ( getCurveWidth(window.w) / 1160 )}
-            stroke="#F3EDE8"
-            strokeWidth={0.6}
+            x={(d) => ( d.x * ( 1080 / dataLength ) )}
+            y={(d) => d.y}
+            stroke="#25C8FC"
+            strokeWidth={0.8}
             strokeOpacity={0.8}
           />
         </svg>
+        <Axes direction="left" range={300} dividers={5} />
       </SvgWrapper>
     </Wrapper>
   );
@@ -40,8 +34,7 @@ function createCurveData(arr) {
   let res = [];
   for(let i = 0; i < arr.length; i++ ) {
     let y = arr[i] * 300;
-    let x = i
-    res.push({y: y, x: x})
+    res.push({y: y, x: i})
   }
   return res;
 }
@@ -51,8 +44,7 @@ const Wrapper = styled.div`
   position: relative;
   overflow: hidden;
   width: 1200px;
-  //padding-bottom: 80px;
-  padding: 20px;
+  padding: 60px;
   box-sizing: border-box;
   margin: 90px auto auto auto;
   z-index: 12;
