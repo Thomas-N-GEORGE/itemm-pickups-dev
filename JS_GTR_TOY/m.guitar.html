@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="">
+  <head>
+    <meta charset="utf-8">
+    <title>Toy e-Guitar</title>
+    <link rel="icon" type="image" href="guitare.png">
+    <link rel="stylesheet" href="css/ui.css" />
+    <script src="js/knobs.js"></script>
+    <!--<script type="text/javascript" src="js/jquery.min.js"></script>-->
+    <script src=https://code.jquery.com/jquery-3.1.1.min.js></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+     <script src="http://cwilso.github.com/AudioContext-MonkeyPatch/AudioContextMonkeyPatch.js"></script>
+
+    <meta name="viewport" 
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    
+    <style>
+    
+        body{ 
+          overflow:hidden;
+        }
+        
+        #fretboard{
+          height:100%;
+        }
+  
+    
+        #fretboardContainer{
+          width: 100%;
+          border: solid 1px red;
+          white-space: nowrap;
+          overflow-x: auto;
+          overflow-y: hidden;
+          left:0;
+          top:0;
+          position:fixed;
+        }
+        
+        .indicator{
+          height : 100px;
+          width : 135px;
+        }
+        
+        .caption{
+          width:60px;
+          left:75px;
+          font-size:15px;
+        }
+      
+        
+        .value{
+          width:58px;
+        }
+        
+        #wavForm{
+          width:245px;
+        }
+    
+       
+    
+    </style>
+  </head>
+  <body>
+    <main>
+
+    <div id="waiting">
+      <div class="lds-spinner"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+    </div>
+
+    <div id="acceuil" onclick="startApp()">
+
+      <div id="accueillImage">
+
+      </div>
+    </div>
+
+      <div id="fretboardContainer">
+        <img id="fretboard" src="css/images/fretboard.svg"/>
+        
+        <div class="stringName" onclick="toggleString(0)" style="top:7.14%" > E</div>
+        <div class="stringName" onclick="toggleString(1)" style="top:21.42%"> B</div> 
+        <div class="stringName" onclick="toggleString(2)" style="top:35.71%"> G</div> 
+        <div class="stringName" onclick="toggleString(3)" style="top:50%"> D </div>  
+        <div class="stringName" onclick="toggleString(4)" style="top:64.28%"> A </div> 
+        <div class="stringName" onclick="toggleString(5)" style="top:78.57%"> E </div> 
+        
+        <div id="finger1" class="leftHandFinger" style="top:7.14%; left:-100px"> </div>
+        <div id="finger2" class="leftHandFinger" style="top:21.42%; left:-100px"> </div> 
+        <div id="finger3" class="leftHandFinger" style="top:35.71%; left:-100px"> </div> 
+        <div id="finger4" class="leftHandFinger" style="top:50%; left:-100px"> </div>  
+        <div id="finger5" class="leftHandFinger" style="top:64.28%; left:-100px"> </div> 
+        <div id="finger6" class="leftHandFinger" style="top:78.57%; left:-100px"> </div> 
+        
+      </div>
+
+    <div id="knobs">
+    
+     <button id="previousMenu" onclick="chgMenu(-1)"></button>
+
+     <button id="nextMenu" onclick="chgMenu(+1)"></button>
+
+     
+      <div class="knobs-grid">
+        <legend>Corde</legend>
+
+          <div class="indicator">
+              <div class="knob" id="densite"></div>
+              <div class="caption"> Densité
+                <input type="text"  id="densite-val" class="value"/>
+              </div>
+          </div>
+          
+          <div class="indicator">
+              <div class="knob" id="raideur"></div>
+              <div class="caption"> Raideur
+                <input type="text"  id="raideur-val" class="value"/>
+              </div>
+          </div>
+            
+          <div class="indicator">
+              <div class="knob" id="tension"></div>
+              <div class="caption">Tension
+                <input type="text"  id="tension-val" class="value"/>
+              </div>
+          </div>  
+          
+          <div class="indicator">
+              <div class="knob" id="pertes"></div>
+              <div class="caption"> Pertes
+                <input type="text"  id="pertes-val" class="value"/>
+              </div>
+          </div>
+      </div>
+      
+       <div class="knobs-grid" style="display:none">
+        <legend>Microphones</legend>
+        
+        <div class = "indicator">
+        
+              <input type="radio" id="html" name="mic_type" value="HTML">
+              <label for="html">Single</label><br>
+              <input type="radio" id="css" name="mic_type" value="CSS">
+              <label for="css">Double</label><br>
+              <input type="radio" id="javascript" name="mic_type" value="JavaScript">
+              <label for="javascript">Penché</label>
+
+          </div>
+          <br>
+          <div class="indicator">
+              <div class="knob" id="hauteur"></div>
+              <div class="caption">Hauteur
+                <input type="text"  id="hauteur-val" class="value"/>
+              </div>
+          </div>  
+          
+          <div class="indicator">
+              <div class="knob" id="gain"></div>
+              <div class="caption"> Gain
+                <input type="text"  id="gain-val" class="value"/>
+              </div>
+          </div>
+
+      </div>
+      
+       <div class="knobs-grid" style="display:none">
+        <legend>Effets</legend>
+        
+          <div class="indicator">
+              <div class="knob" id="threshold"></div>
+              <div class="caption">threshold
+                <input type="text"  id="threshold-val" class="value"/>
+              </div>
+          </div>  
+          
+          <div class="indicator">
+              <div class="knob" id="knee"></div>
+              <div class="caption"> knee
+                <input type="text"  id="knee-val" class="value"/>
+              </div>
+          </div>
+
+      </div>
+        
+        
+
+      <div class="knobs-grid" style="display:none">
+          <legend>Attaque</legend>
+  
+            <div class="indicator">
+                <div class="knob" id="position"></div>
+                <div class="caption"> Position
+                    <input type="text"  id="position-val" class="value"/>
+                </div>
+            </div>
+  
+            <div class="indicator">
+                <div class="knob" id="force"></div>
+                <div class="caption">  Force
+                  <input type="text"  id="force-val" class="value"/>
+                </div>
+            </div>
+
+            <div class="indicator">
+                <div class="knob" id="duree"></div>
+                <div class="caption"> Duree
+                  <input type="text"  id="duree-val" class="value"/>
+                </div>
+            </div>
+      </div>
+        
+      <div id="infos" class="knobs-grid" style="display:none">
+
+          <legend> Infos </legend>
+        
+            <canvas id="wavForm"></canvas>
+         
+      </div>
+    
+    </div>
+      
+    <div id="smallInfo">
+      <div id="speed"></div>
+      <button id="audioStart" onclick="window.audioStart()">  </button>
+    </div>
+
+      
+      
+       <div id="pickups">
+        
+            <div id="pickup1" class="pickup"><div class="pickupHandle"></div></div>
+            <!--<div id="pickup2" class="pickup"><div class="pickupHandle"></div></div>
+            <div id="pickup3" class="pickup"><div class="pickupHandle"></div></div>-->
+            
+      <div id="struming">
+        <div id="cordier"></div>
+        <div id="string1" class="string strummable" style="height:1px"> </div>
+        <div id="string2" class="string strummable" style="height:2px"> </div>
+        <div id="string3" class="string strummable" style="height:3px"> </div>
+        <div id="string4" class="string strummable" style="height:5px"> <div class="spuned"></div></div>
+        <div id="string5" class="string strummable" style="height:6px"> <div class="spuned"></div></div>
+        <div id="string6" class="string strummable" style="height:7px"> <div class="spuned"></div></div>
+      </div>
+            
+</div>
+
+            
+        
+        </div>
+    </main>
+    <footer>
+    </footer>
+
+   <!-- mouse/touch events -->
+      <script type="text/javascript" src="js/ui.js"></script>
+    
+      
+      <script type="text/javascript">
+      
+        let knobList = document.getElementsByClassName('knob');
+        for(let i = 0; i < knobList.length; i++) {
+          (function(index) {
+              let dial1 = new Knob({
+                size: "large",
+                type: "FStyle",
+                lowVal: 0,
+                highVal: 100,
+                value: 50,
+                sensitivity: 1,
+                label: false,
+                lblTxtColor: "black",
+                id: knobList[index].id
+              });
+          
+           // userValues[index].addEventListener("change", function() {
+           //   window.inst.chgParameters(userValues[index].id.split("-")[0], userValues[index].value);
+            })(i);
+        }
+        
+        //dial1.getValue(); //get dial 1's value
+
+        //dial2.setValue(20); //set dial 2's value to 20 
+
+        //the main event
+        function knobChanged(id, val) {
+          let sliderVal = document.getElementById(`${id}-val`)
+          sliderVal.value = `${val}`;
+          sliderVal.dispatchEvent(new Event('change'));
+        }
+        
+        let userValues = document.getElementsByClassName('value');
+        for(let i = 0; i < userValues.length; i++) {
+          (function(index) {
+            userValues[index].addEventListener("change", function() {
+              window.inst.chgParameters(userValues[index].id.split("-")[0], userValues[index].value);
+            })
+          })(i);
+        }
+      </script>
+      
+      
+      <script>
+        async function startApp(){
+             //if (!document.fullscreenElement) {
+             //   await document.documentElement.requestFullscreen().catch(err=>{console.log(err)});
+                $("#acceuil").fadeOut()
+                
+                
+                  ctxW = getCTX("wavForm");
+
+
+                  ctxW.xmin = 0;
+                  ctxW.xmax = 1;
+                  ctxW.ymin = -1;
+                  ctxW.ymax = 1;
+             // }
+              //screen.orientation.lock("portrait");
+        }
+        //$("#acceuil").fadeOut()
+      </script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/3.3.0/math.min.js"></script>
+      <!--script type="text/javascript" src="./js/piano.js"></script>-->
+      
+      <script src="js/draw.js"></script>
+      
+      <script type="module" src="js/init.js"></script>
+      
+    
+      
+
+  </body>
+ 
+</html>
+
