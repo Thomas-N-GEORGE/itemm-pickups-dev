@@ -8,6 +8,13 @@
  - Le fichier ui.js va appeler les méthodes des classes `Instrument` et `Corde` (Pas `Micro`, à priori), comme `Corde.pluck()` par exemple.
  - Le fichier *audio.js* appelle la méthode ``Instrument.output()``.
 
+ ### Questions sur ce fichier : 
+
+  - Éclaircissements sur les paramètres et méthodes de la classe Corde : 
+    - c'est ici le centre des calculs ? 
+    - j'ai besoin d'ajouter des commentaires afin de m'y retrouver, c'est pas hyper clair.
+    - Romain ou Jérémy reconnaîtront sans doute le type d'opération dont il s'agit.
+
 
 ## Le son ?
 
