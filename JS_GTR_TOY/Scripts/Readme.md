@@ -24,3 +24,7 @@
  - ``audioCtx.createConvolver()``  : cf Web Audio API : https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API/Using_Web_Audio_API 
  - À étudier avec draw.js qui contient quelques-unes des fonctions appelées.
  - Des modules JS audio et leurs fonctions semblent dépréciées ; il va falloir les remplacer avec autre chose, voir la doc MDN.
+
+
+  - Le spectre affiché doit être calculé si possible sur les premières 500ms.
+  - Se limiter en dessous de 5-6kHz
